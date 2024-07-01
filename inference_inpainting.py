@@ -88,4 +88,3 @@ if __name__ == '__main__':
         imwrite(save_face, save_restore_path)
 
     print(f'\nAll results are saved in {result_root}')
-

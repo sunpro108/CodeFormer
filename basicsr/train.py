@@ -49,6 +49,9 @@ def parse_options(root_path, is_train=True):
         opt['manual_seed'] = seed
     set_random_seed(seed + opt['rank'])
 
+
+    print(opt)
+
     return opt
 
 
