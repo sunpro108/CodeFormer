@@ -314,7 +314,6 @@ class Generator(nn.Module):
         blocks.append(nn.Conv2d(block_in_ch, self.out_channels, kernel_size=3, stride=1, padding=1))
 
         self.blocks = nn.ModuleList(blocks)
-   
 
     def forward(self, x):
         for block in self.blocks:
@@ -322,7 +321,7 @@ class Generator(nn.Module):
             
         return x
 
-  
+
 @ARCH_REGISTRY.register()
 class VQAutoEncoder(nn.Module):
     def __init__(self, img_size, nf, ch_mult, quantizer="nearest", res_blocks=2, attn_resolutions=[16], codebook_size=1024, emb_dim=256,

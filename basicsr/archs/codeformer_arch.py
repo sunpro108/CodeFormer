@@ -85,6 +85,7 @@ class PositionEmbeddingSine(nn.Module):
         pos = torch.cat((pos_y, pos_x), dim=3).permute(0, 3, 1, 2)
         return pos
 
+
 def _get_activation_fn(activation):
     """Return an activation function given a string"""
     if activation == "relu":
@@ -133,6 +134,7 @@ class TransformerSALayer(nn.Module):
         tgt = tgt + self.dropout2(tgt2)
         return tgt
 
+
 class Fuse_sft_block(nn.Module):
     def __init__(self, in_ch, out_ch):
         super().__init__()
@@ -165,6 +167,7 @@ class CodeFormer(VQAutoEncoder):
                 fix_modules=['quantize','generator'], vqgan_path=None):
         super(CodeFormer, self).__init__(512, 64, [1, 2, 2, 4, 4, 8], 'nearest',2, [16], codebook_size)
 
+        # vqgan load pretrained weights
         if vqgan_path is not None:
             self.load_state_dict(
                 torch.load(vqgan_path, map_location='cpu')['params_ema'])
