@@ -6,7 +6,12 @@ import copy
 import random
 import time
 import torch
+import os
 from os import path as osp
+os.environ['OMP_NUM_THREADS'] = '1'
+os.environ['TORCH_HOME'] = '/sun/home_torch'
+import sys 
+sys.path.append(os.getcwd())
 
 from basicsr.data import build_dataloader, build_dataset
 from basicsr.data.data_sampler import EnlargedSampler
@@ -25,7 +30,7 @@ def parse_options(root_path, is_train=True):
     parser = argparse.ArgumentParser()
     parser.add_argument('-opt', type=str, required=True, help='Path to option YAML file.')
     parser.add_argument('--launcher', choices=['none', 'pytorch', 'slurm'], default='none', help='job launcher')
-    parser.add_argument('--local_rank', type=int, default=0)
+    # parser.add_argument('--local_rank', type=int, default=0)
     args = parser.parse_args()
     opt = parse(args.opt, root_path, is_train=is_train)
 
@@ -40,7 +45,9 @@ def parse_options(root_path, is_train=True):
         else:
             init_dist(args.launcher)
 
-    opt['rank'], opt['world_size'] = get_dist_info()
+    # opt['rank'], opt['world_size'] = get_dist_info()
+    opt['rank'] = int(os.environ['LOCAL_RANK'])
+    opt['world_size'] = int(os.environ['WORLD_SIZE'])
 
     # random seed
     seed = opt.get('manual_seed')
@@ -49,16 +56,14 @@ def parse_options(root_path, is_train=True):
         opt['manual_seed'] = seed
     set_random_seed(seed + opt['rank'])
 
-
     print(opt)
-
     return opt
 
 
 def init_loggers(opt):
     log_file = osp.join(opt['path']['log'], f"train_{opt['name']}.log")
     logger = get_root_logger(logger_name='basicsr', log_level=logging.INFO, log_file=log_file)
-    logger.info(get_env_info())
+    # logger.info(get_env_info())
     logger.info(dict2str(opt))
 
     # initialize wandb logger before tensorboard logger to allow proper sync:

@@ -5,6 +5,9 @@ import h5py
 from PIL import Image
 from torch.utils.data import Dataset
 
+from basicsr.utils import FileClient, get_root_logger, imfrombytes, img2tensor
+from basicsr.utils.registry import DATASET_REGISTRY
+from basicsr.data.transforms import Compose, ToTensor, Normalize
 
 Dict_Iharmony4_Count = {
     'test':{
@@ -24,11 +27,17 @@ Dict_Iharmony4_Count = {
 }
 
 
+@DATASET_REGISTRY.register()
 class IH5Dataset(Dataset):
-    def __init__(self, archive, transform, mode='train', subset='HAdobe5k', arch_mode=True) -> None:
+    def __init__(self, opt):
+    # def __init__(self, archive, transform, mode='train', subset='HAdobe5k', arch_mode=True) -> None:
         super().__init__()
-        self.archive = archive
-        self.transform = transform
+        self.logger = get_root_logger()
+        self.archive = opt['archive']
+        # self.transform = transform # todo
+        mode = opt.get('mode','test') # todo
+        subset = opt.get('subset','HAdobe5k') # todo
+        arch_mode = opt.get('arch_mode', True) # todo
         if arch_mode: # use total archive file
             self.index_start = Dict_Iharmony4_Count[mode][subset][0]
             self.index_end = Dict_Iharmony4_Count[mode][subset][1]
@@ -36,7 +45,7 @@ class IH5Dataset(Dataset):
             self.index_start = 0
             self.index_end = Dict_Iharmony4_Count[mode][subset][1] - Dict_Iharmony4_Count[mode][subset][0]
         self._len_dataset = self.index_end - self.index_start
-        with open(f'datasets/ihm4/IHD_{mode}.txt','r') as f:
+        with open(f'data/iharmony4/IHD_{mode}.txt','r') as f:
             self.list_names = f.readlines()
             self.list_names = [x.strip() for x in self.list_names]
 
@@ -44,6 +53,10 @@ class IH5Dataset(Dataset):
         self.comp = None
         self.real = None
         self.mask = None
+        self.transform = Compose([
+            ToTensor(),
+            Normalize(mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5])
+        ])
 
     def __getitem__(self, index) -> Any:
         if self.comp is None:
@@ -60,18 +73,19 @@ class IH5Dataset(Dataset):
         real = self.real[index][x:x+64, y:y+64]
         mask = self.mask[index][x:x+64, y:y+64]
         img_path = self.list_names[index]
-        print(comp.shape)
+        # print(comp.shape)
         # comp = Image.fromarray(comp)
         # real = Image.fromarray(real)
         # mask = Image.fromarray(mask, mode='1')
         comp, real, mask = self.transform(comp, real, mask)
         comp  = self._compose(comp, mask, real)
-        # return dict(zip(['comp','real','mask','img_path'],(comp, real, mask, img_path)))
-        return comp, real
+        return dict(zip(['comp','gt','mask','img_path'],(comp, real, mask, img_path)))
+        # return comp, real
 
     def __len__(self):
         return self._len_dataset
 
-    def _compose(self, fore, mask, back):
+    @staticmethod
+    def _compose(fore, mask, back):
         return fore * mask + back * (1 - mask)
 

@@ -1,6 +1,9 @@
 import cv2
 import random
 
+import torch.nn as nn
+from torchvision import transforms
+import torchvision.transforms.functional as F
 
 def mod_crop(img, scale):
     """Mod crop images, used during testing.
@@ -163,3 +166,96 @@ def img_rotate(img, angle, center=None, scale=1.0):
     matrix = cv2.getRotationMatrix2D(center, angle, scale)
     rotated_img = cv2.warpAffine(img, matrix, (w, h))
     return rotated_img
+
+
+class Compose(transforms.Compose):
+    def __init__(self, transforms):
+        super().__init__(transforms)
+
+    def __call__(self, img_comp, img_real, img_mask):
+        for t in self.transforms:
+            img_comp, img_real, img_mask = t(img_comp, img_real, img_mask)
+        return img_comp, img_real, img_mask
+
+
+class Resize(transforms.Resize):
+    def __init__(self, size, interpolation=transforms.InterpolationMode.BILINEAR):
+        super().__init__(size, interpolation)
+
+    def __call__(self, img_comp, img_real, img_mask):
+        return super().__call__(img_comp), super().__call__(img_real), super().__call__(img_mask)
+
+
+class RandomCrop(nn.Module):
+    """
+    Randomly crop the image.
+    """
+    def __init__(self, size:tuple):
+        super().__init__()
+        self.size = size
+
+    def forward(self, img_comp, img_real, img_mask):
+        assert img_comp.size == img_real.size == img_mask.size, 'RandomCrop: image size mismatch'
+        step = 0
+        while True:
+            step+=1
+            i, j, h, w = transforms.RandomCrop.get_params(img_mask, self.size)
+            crop_func = partial(F.crop, top=i, left=j, height=h, width=w)
+            croped_mask = crop_func(img_mask)
+            if F.to_tensor(croped_mask).sum() > 1:
+                return crop_func(img_comp), crop_func(img_real), crop_func(img_mask)
+            if step > 10:
+                print("warning: too much step to make sun mask left after cropping")
+
+
+class RandomHorizontalFlip(nn.Module):
+    """
+    Randomly horizontal Flip the image
+    """
+    def __init__(self, *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
+
+    def forward(self, img_comp, img_real, img_mask):
+        assert img_comp.size == img_real.size == img_mask.size, 'RandomHorizontalFlip: image size mismatch'
+        if random.random() > 0.5:
+            return F.hflip(img_comp), F.hflip(img_real), F.hflip(img_mask)
+        else:
+            return img_comp, img_real, img_mask
+
+class ToTensor(transforms.ToTensor):
+    """
+    Convert a ``PIL Image`` or ``numpy.ndarray`` to tensor.
+    Converts a PIL Image or numpy.ndarray (H x W x C) in the range
+    [0, 255] to a torch.FloatTensor of shape (C x H x W) in the range [0.0, 1.0].
+    """
+    def __init__(self, *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
+
+    def __call__(self, img_comp, img_real, img_mask):
+        return F.to_tensor(img_comp), F.to_tensor(img_real), F.to_tensor(img_mask)
+
+
+class Normalize(transforms.Normalize):
+    """
+    Normalize a tensor image with mean and standard deviation.
+    Given mean: ``(M1,...,Mn)`` and std: ``(S1,..,Sn)`` for ``n`` channels, this transform
+    will normalize each channel of the input ``torch.*Tensor`` i.e.
+    ``input[channel] = (input[channel] - mean[channel]) / std[channel]``
+    """
+    def __init__(self, *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
+
+    def forward(self, img_comp, img_real, img_mask):
+        return F.normalize(img_comp, self.mean, self.std), F.normalize(img_real, self.mean, self.std), img_mask
+
+class ToPILImage(transforms.ToPILImage):
+    """
+    Convert a tensor or an ndarray to PIL Image.
+    Converts a torch.*Tensor of shape C x H x W or a numpy ndarray of shape
+    H x W x C to a PIL Image while preserving the value range.
+    """
+    def __init__(self, *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
+
+    def __call__(self, img_comp, img_real, img_mask):
+        return F.to_pil_image(img_comp), F.to_pil_image(img_real), F.to_pil_image(img_mask, mode='L')
