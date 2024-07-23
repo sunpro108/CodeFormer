@@ -13,12 +13,12 @@ import gradio as gr
 
 from torchvision.transforms.functional import normalize
 
-from basicsr.archs.rrdbnet_arch import RRDBNet
-from basicsr.utils import imwrite, img2tensor, tensor2img
-from basicsr.utils.download_util import load_file_from_url
-from basicsr.utils.misc import gpu_is_available, get_device
-from basicsr.utils.realesrgan_utils import RealESRGANer
-from basicsr.utils.registry import ARCH_REGISTRY
+from src.archs.rrdbnet_arch import RRDBNet
+from src.utils import imwrite, img2tensor, tensor2img
+from src.utils.download_util import load_file_from_url
+from src.utils.misc import gpu_is_available, get_device
+from src.utils.realesrgan_utils import RealESRGANer
+from src.utils.registry import ARCH_REGISTRY
 
 from facelib.utils.face_restoration_helper import FaceRestoreHelper
 from facelib.utils.misc import is_gray

@@ -83,9 +83,9 @@ train:
     restart_weights: [1]
     eta_min: !!float 6e-5 # no lr reduce in official vqgan code
 
-  total_iter: 1600000
+  total_iter: 10
 
-  warmup_iter: -1  # no warm up
+  warmup_iter: 1  # no warm up
   ema_decay: 0.995 # GFPGAN: 0.5**(32 / (10 * 1000) == 0.998; Unleashing: 0.995
 
   pixel_opt:

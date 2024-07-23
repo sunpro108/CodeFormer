@@ -5,9 +5,9 @@ import os
 import cv2
 import torch
 from torchvision.transforms.functional import normalize
-from basicsr.utils import imwrite, img2tensor, tensor2img
+from src.utils import imwrite, img2tensor, tensor2img
 
-from basicsr.utils.registry import ARCH_REGISTRY
+from src.utils.registry import ARCH_REGISTRY
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
