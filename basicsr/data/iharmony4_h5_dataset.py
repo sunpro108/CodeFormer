@@ -35,7 +35,7 @@ class IH5Dataset(Dataset):
         self.logger = get_root_logger()
         self.archive = opt['archive']
         # self.transform = transform # todo
-        mode = opt.get('mode','test') # todo
+        mode = opt.get('mode','train') # todo
         subset = opt.get('subset','HAdobe5k') # todo
         arch_mode = opt.get('arch_mode', True) # todo
         if arch_mode: # use total archive file
@@ -79,7 +79,7 @@ class IH5Dataset(Dataset):
         # mask = Image.fromarray(mask, mode='1')
         comp, real, mask = self.transform(comp, real, mask)
         comp  = self._compose(comp, mask, real)
-        return dict(zip(['comp','gt','mask','img_path'],(comp, real, mask, img_path)))
+        return dict(zip(['in','gt','mask','img_path'],(comp, real, mask, img_path)))
         # return comp, real
 
     def __len__(self):

@@ -9,4 +9,4 @@
 # from train import *
 # from utils import *
 # from version import __gitsha__, __version__
-from version import __version__
+from .version import __version__

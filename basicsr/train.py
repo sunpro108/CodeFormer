@@ -8,7 +8,6 @@ import time
 import torch
 import os
 from os import path as osp
-os.environ['OMP_NUM_THREADS'] = '1'
 os.environ['TORCH_HOME'] = '/sun/home_torch'
 import sys 
 sys.path.append(os.getcwd())
@@ -56,7 +55,6 @@ def parse_options(root_path, is_train=True):
         opt['manual_seed'] = seed
     set_random_seed(seed + opt['rank'])
 
-    print(opt)
     return opt
 
 
@@ -64,7 +62,7 @@ def init_loggers(opt):
     log_file = osp.join(opt['path']['log'], f"train_{opt['name']}.log")
     logger = get_root_logger(logger_name='basicsr', log_level=logging.INFO, log_file=log_file)
     # logger.info(get_env_info())
-    logger.info(dict2str(opt))
+    # logger.info(dict2str(opt))
 
     # initialize wandb logger before tensorboard logger to allow proper sync:
     if (opt['logger'].get('wandb') is not None) and (opt['logger']['wandb'].get('project') is not None):
@@ -126,7 +124,8 @@ def train_pipeline(root_path):
     if opt['path'].get('resume_state'):
         device_id = torch.cuda.current_device()
         resume_state = torch.load(
-            opt['path']['resume_state'], map_location=lambda storage, loc: storage.cuda(device_id))
+            opt['path']['resume_state'],
+            map_location=lambda storage, loc: storage.cuda(device_id))
     else:
         resume_state = None
 
@@ -138,7 +137,7 @@ def train_pipeline(root_path):
 
     # initialize loggers
     logger, tb_logger = init_loggers(opt)
-    
+
     # create train and validation dataloaders
     result = create_train_val_dataloader(opt, logger)
     train_loader, train_sampler, val_loader, total_epochs, total_iters = result

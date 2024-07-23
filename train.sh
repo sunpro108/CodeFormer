@@ -2,7 +2,8 @@
 torchrun \
 --standalone \
 --nnodes=1 \
---nproc-per-node=1 \
+--nproc-per-node=4 \
 basicsr/train.py \
--opt options/VQGAN_512_ds32_nearest_stage1_harmer.yml \
---launcher pytorch
+--launcher pytorch \
+-opt options/VQGAN_512_ds32_nearest_stage1_harmer.yml 
+# -opt options/CodeFormer_stage2_harmer.yml
