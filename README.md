@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="assets/CodeFormer_logo.png" height=110>
+  <img src="docs/assets/CodeFormer_logo.png" height=110>
 </p>
 
 ## Towards Robust Blind Face Restoration with Codebook Lookup Transformer (NeurIPS 2022)
@@ -14,7 +14,7 @@
 
 S-Lab, Nanyang Technological University
 
-<img src="assets/network.jpg" width="800px"/>
+<img src="docs/assets/network.jpg" width="800px"/>
 
 
 :star: If CodeFormer is helpful to your images or projects, please help star this repo. Thanks! :hugs: 
@@ -37,20 +37,20 @@ S-Lab, Nanyang Technological University
 - [x] ~~Add background image enhancement~~
 
 #### :panda_face: Try Enhancing Old Photos / Fixing AI-arts
-[<img src="assets/imgsli_1.jpg" height="226px"/>](https://imgsli.com/MTI3NTE2) [<img src="assets/imgsli_2.jpg" height="226px"/>](https://imgsli.com/MTI3NTE1) [<img src="assets/imgsli_3.jpg" height="226px"/>](https://imgsli.com/MTI3NTIw) 
+[<img src="docs/assets/imgsli_1.jpg" height="226px"/>](https://imgsli.com/MTI3NTE2) [<img src="docs/assets/imgsli_2.jpg" height="226px"/>](https://imgsli.com/MTI3NTE1) [<img src="docs/assets/imgsli_3.jpg" height="226px"/>](https://imgsli.com/MTI3NTIw) 
 
 #### Face Restoration
 
-<img src="assets/restoration_result1.png" width="400px"/> <img src="assets/restoration_result2.png" width="400px"/>
-<img src="assets/restoration_result3.png" width="400px"/> <img src="assets/restoration_result4.png" width="400px"/>
+<img src="docs/assets/restoration_result1.png" width="400px"/> <img src="docs/assets/restoration_result2.png" width="400px"/>
+<img src="docs/assets/restoration_result3.png" width="400px"/> <img src="docs/assets/restoration_result4.png" width="400px"/>
 
 #### Face Color Enhancement and Restoration
 
-<img src="assets/color_enhancement_result1.png" width="400px"/> <img src="assets/color_enhancement_result2.png" width="400px"/>
+<img src="docs/assets/color_enhancement_result1.png" width="400px"/> <img src="docs/assets/color_enhancement_result2.png" width="400px"/>
 
 #### Face Inpainting
 
-<img src="assets/inpainting_result1.png" width="400px"/> <img src="assets/inpainting_result2.png" width="400px"/>
+<img src="docs/assets/inpainting_result1.png" width="400px"/> <img src="docs/assets/inpainting_result2.png" width="400px"/>
 
 
 
