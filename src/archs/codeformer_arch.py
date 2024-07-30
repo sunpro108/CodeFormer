@@ -170,7 +170,7 @@ class CodeFormer(VQAutoEncoder):
         # vqgan load pretrained weights
         if vqgan_path is not None:
             self.load_state_dict(
-                torch.load(vqgan_path, map_location='cpu')['params_ema'])
+                torch.load(vqgan_path, map_location='cpu', weights_only=True)['params_ema'])
 
         if fix_modules is not None:
             for module in fix_modules:

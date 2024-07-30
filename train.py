@@ -16,8 +16,9 @@ from src.data import build_dataloader, build_dataset
 from src.data.data_sampler import EnlargedSampler
 from src.data.prefetch_dataloader import CPUPrefetcher, CUDAPrefetcher
 from src.models import build_model
-from src.utils import (MessageLogger, check_resume, get_env_info, get_root_logger, init_tb_logger,
-                           init_wandb_logger, make_exp_dirs, mkdir_and_rename, set_random_seed)
+from src.utils import (
+    MessageLogger, check_resume, get_env_info, get_root_logger, init_tb_logger,
+    init_wandb_logger, make_exp_dirs, mkdir_and_rename, set_random_seed)
 from src.utils.dist_util import get_dist_info, init_dist
 from src.utils.options import dict2str, parse
 
