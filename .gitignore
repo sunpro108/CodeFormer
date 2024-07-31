@@ -14,6 +14,14 @@ version.py
 *.dat
 *.zip
 
+# soft-links
+vqgan_src 
+data/*
+!data/.gitkeep
+weights/*
+!weights/.gitkeep
+
+
 # template
 
 # Byte-compiled / optimized / DLL files
