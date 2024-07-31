@@ -56,7 +56,6 @@ class IH5Dataset(Dataset):
         self.mask = None
         self.transform = Compose([
             ToTensor(),
-            Normalize(mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5])
         ])
 
     def __getitem__(self, index) -> Any:

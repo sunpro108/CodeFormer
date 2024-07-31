@@ -248,6 +248,9 @@ class VQGANModel(SRModel):
                 # calculate metrics
                 for name, opt_ in self.opt['val']['metrics'].items():
                     metric_data = dict(img1=sr_img, img2=gt_img)
+                    # print('*'*20+'show data'+'*'*20)
+                    # print(sr_img.max(), sr_img.min())
+                    # print(gt_img.max(), gt_img.min())
                     self.metric_results[name] += calculate_metric(metric_data, opt_)
             pbar.update(1)
             pbar.set_description(f'Test {img_name}')
@@ -275,6 +278,9 @@ class VQGANModel(SRModel):
         out_dict = OrderedDict()
         out_dict['gt'] = self.gt.detach().cpu()
         out_dict['result'] = self.output.detach().cpu()
+        # print('*'*20+'current visuals'+'*'*20)
+        # print(out_dict['gt'].max(), out_dict['gt'].min())
+        # print(out_dict['result'].max(), out_dict['result'].min())
         return out_dict
 
     def save(self, epoch, current_iter):

@@ -33,7 +33,6 @@ class IHarmony4Dataset(data.Dataset):
         self.transform_rgb = transforms.Compose([
             transforms.Resize((image_size, image_size)),
             transforms.ToTensor(),
-            transforms.Normalize([0.5, 0.5, 0.5], [0.5, 0.5,0.5])
         ])
         self.transform_mask = transforms.Compose([
             transforms.Resize((image_size, image_size)),

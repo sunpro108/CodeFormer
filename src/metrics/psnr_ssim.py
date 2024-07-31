@@ -40,8 +40,11 @@ def calculate_psnr(img1, img2, crop_border, input_order='HWC', test_y_channel=Fa
         img1 = to_y_channel(img1)
         img2 = to_y_channel(img2)
 
+
     mse = np.mean((img1 - img2)**2)
     if mse == 0:
+        # print(img1.max(), img1.min())
+        # print(img2.max(), img2.min())
         return float('inf')
     return 20. * np.log10(255. / np.sqrt(mse))
 
