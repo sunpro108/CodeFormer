@@ -21,12 +21,10 @@ datasets:
     is_for_train: true
     img_size: 512
     
-    use_corrupt: false # for VQGAN
-
     # data loader
-    num_worker_per_gpu: 2
+    num_worker_per_gpu: 1
     batch_size_per_gpu: 4
-    dataset_enlarge_ratio: 100
+    dataset_enlarge_ratio: 1
 
     prefetch_mode: cpu
     num_prefetch_queue: 4
@@ -57,12 +55,12 @@ network_d:
 
 # path
 path:
-  pretrain_network_g: experiments/20240731_115629_VQGAN-512-ds32-nearest-stage1/models/net_g_10000.pth
+  pretrain_network_g: weights/codeformer/stage3/codeformer_inpainting.pth
   param_key_g: params_ema
-  strict_load_g: true
-  pretrain_network_d: experiments/20240731_115629_VQGAN-512-ds32-nearest-stage1/models/net_d_10000.pth
+  strict_load_g: false
+  pretrain_network_d: null
   strict_load_d: true
-  resume_state: experiments/20240731_115629_VQGAN-512-ds32-nearest-stage1/training_states/10000.state
+  resume_state: null
 
 # base_lr(4.5e-6)*bach_size(4)
 train:
@@ -83,7 +81,7 @@ train:
     restart_weights: [1]
     eta_min: !!float 6e-5 # no lr reduce in official vqgan code
 
-  total_iter: 100000
+  total_epoch : 10
 
   warmup_iter: 1  # no warm up
   ema_decay: 0.995 # GFPGAN: 0.5**(32 / (10 * 1000) == 0.998; Unleashing: 0.995

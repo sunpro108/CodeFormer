@@ -93,8 +93,12 @@ def create_train_val_dataloader(opt, logger):
 
             num_iter_per_epoch = math.ceil(
                 len(train_set) * dataset_enlarge_ratio / (dataset_opt['batch_size_per_gpu'] * opt['world_size']))
-            total_iters = int(opt['train']['total_iter'])
-            total_epochs = math.ceil(total_iters / (num_iter_per_epoch))
+            total_epochs = int(opt['train']['total_epoch'])
+            # total_iters = int(opt['train']['total_iter'])
+            if total_epochs == 0: #for debug
+                total_iters = 10
+            else:
+                total_iters = total_epochs * num_iter_per_epoch
             logger.info('Training statistics:'
                         f'\n\tNumber of train images: {len(train_set)}'
                         f'\n\tDataset enlarge ratio: {dataset_enlarge_ratio}'
@@ -159,7 +163,7 @@ def train_pipeline(root_path):
         current_iter = 0
 
     # create message logger (formatted outputs)
-    msg_logger = MessageLogger(opt, current_iter, tb_logger)
+    msg_logger = MessageLogger(opt, current_iter, total_iters, tb_logger)
 
     # dataloader prefetcher
     prefetch_mode = opt['datasets']['train'].get('prefetch_mode')
@@ -208,10 +212,11 @@ def train_pipeline(root_path):
                 logger.info('Saving models and training states.')
                 model.save(epoch, current_iter)
 
-            # validation
-            if opt.get('val') is not None and opt['datasets'].get('val') is not None \
-                and (current_iter % opt['val']['val_freq'] == 0):
-                model.validation(val_loader, current_iter, tb_logger, opt['val']['save_img'])
+        # validation
+        if opt.get('val') is not None and opt['datasets'].get('val') is not None \
+            and (epoch % 2==0):
+            # and (current_iter % opt['val']['val_freq'] == 0):
+            model.validation(val_loader, current_iter, tb_logger, opt['val']['save_img'])
 
             data_time = time.time()
             iter_time = time.time()
@@ -228,6 +233,7 @@ def train_pipeline(root_path):
         model.validation(val_loader, current_iter, tb_logger, opt['val']['save_img'])
     if tb_logger:
         tb_logger.close()
+    logger.info('#'*30+'OK! Finished & Exit!')
 
 
 if __name__ == '__main__':

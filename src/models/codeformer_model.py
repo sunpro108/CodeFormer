@@ -290,11 +290,15 @@ class CodeFormerModel(SRModel):
 
             if with_metrics:
                 # calculate metrics
+                psnr = 0
                 for name, opt_ in self.opt['val']['metrics'].items():
                     metric_data = dict(img1=sr_img, img2=gt_img)
-                    self.metric_results[name] += calculate_metric(metric_data, opt_)
+                    _m = calculate_metric(metric_data, opt_)
+                    if name == 'psnr':
+                        psnr = _m
+                    self.metric_results[name] += _m
             pbar.update(1)
-            pbar.set_description(f'Test {img_name}')
+            pbar.set_description(f'Test {img_name}:{psnr:.2f}')
         pbar.close()
 
         if with_metrics:

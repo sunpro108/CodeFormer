@@ -19,11 +19,11 @@ class MessageLogger():
         tb_logger (obj:`tb_logger`): Tensorboard logger. Default： None.
     """
 
-    def __init__(self, opt, start_iter=1, tb_logger=None):
+    def __init__(self, opt, start_iter=1, max_iters=100, tb_logger=None):
         self.exp_name = opt['name']
         self.interval = opt['logger']['print_freq']
         self.start_iter = start_iter
-        self.max_iters = opt['train']['total_iter']
+        self.max_iters = max_iters
         self.use_tb_logger = opt['logger']['use_tb_logger']
         self.tb_logger = tb_logger
         self.start_time = time.time()

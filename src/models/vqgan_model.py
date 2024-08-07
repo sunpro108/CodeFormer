@@ -244,6 +244,7 @@ class VQGANModel(SRModel):
                                                  f'{img_name}_{self.opt["name"]}.png')
                 imwrite(sr_img, save_img_path)
 
+            psnr = 0
             if with_metrics:
                 # calculate metrics
                 for name, opt_ in self.opt['val']['metrics'].items():
@@ -251,9 +252,12 @@ class VQGANModel(SRModel):
                     # print('*'*20+'show data'+'*'*20)
                     # print(sr_img.max(), sr_img.min())
                     # print(gt_img.max(), gt_img.min())
-                    self.metric_results[name] += calculate_metric(metric_data, opt_)
+                    _m = calculate_metric(metric_data, opt_)
+                    if 'psnr' == name:
+                        psnr = _m
+                    self.metric_results[name] += _m
             pbar.update(1)
-            pbar.set_description(f'Test {img_name}')
+            pbar.set_description(f'Test {img_name}:{psnr:.2f}')
         pbar.close()
 
         if with_metrics:
